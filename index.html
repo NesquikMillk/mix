@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Three.js GLTF Model Loader</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Подключаем Three.js через CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.130.1/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.130.1/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.130.1/examples/js/loaders/GLTFLoader.js"></script>
+
+    <script>
+        // Создаем сцену, камеру и рендерер
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Добавление освещения:
+        // Амбиентный свет (равномерное освещение)
+        const ambientLight = new THREE.AmbientLight(0x404040, 1); // Темный свет
+        scene.add(ambientLight);
+
+        // Направленный свет (похож на солнечные лучи)
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(5, 5, 5); // Позиция источника света
+        scene.add(directionalLight);
+
+        // Точечный свет (освещает модель с одной точки)
+        const pointLight = new THREE.PointLight(0xffffff, 2, 50); // Яркость, дальность
+        pointLight.position.set(10, 10, 10);
+        scene.add(pointLight);
+
+        // Загрузка 3D модели (GLTF)
+        const loader = new THREE.GLTFLoader();
+        loader.load(
+            'https://threejs.org/examples/models/gltf/LeePerrySmith/LeePerrySmith.glb', // URL модели
+            function (gltf) {
+                // При успешной загрузке добавляем модель на сцену
+                const model = gltf.scene;
+
+                // Уменьшаем модель
+                model.scale.set(0.2, 0.2, 0.2); // Масштабируем модель (уменьшаем)
+
+                // Добавляем модель на сцену
+                scene.add(model);
+            },
+            undefined,
+            function (error) {
+                // В случае ошибки выводим ошибку в консоль
+                console.error(error);
+            }
+        );
+
+        // Камера
+        camera.position.z = 5;
+
+        // Анимация
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Вращаем сцену для анимации
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Добавление OrbitControls для вращения сцены
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; // Для плавного движения
+        controls.dampingFactor = 0.25; // Интенсивность плавного движения
+        controls.screenSpacePanning = false; // Запрещаем перемещение по экрану
+    </script>
+</body>
+</html>
+
