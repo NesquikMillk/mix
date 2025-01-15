@@ -68,21 +68,25 @@
         camera.position.z = 5;
 
         // Анимация
-        function animate() {
+       function animate() {
             requestAnimationFrame(animate);
 
-            // Вращаем сцену для анимации
+            // Если модель загружена, вращаем ее
+            if (model) {
+                model.rotation.y += 0.01; // Вращение модели вокруг оси Y
+            }
+
+            // Рендерим сцену
             renderer.render(scene, camera);
         }
 
         animate();
 
-        // Добавление OrbitControls для вращения сцены
+        // OrbitControls для вращения сцены
         const controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true; // Для плавного движения
-        controls.dampingFactor = 0.25; // Интенсивность плавного движения
-        controls.screenSpacePanning = false; // Запрещаем перемещение по экрану
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
+        controls.screenSpacePanning = false;
     </script>
 </body>
 </html>
-
